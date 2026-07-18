@@ -15,3 +15,5 @@ wsl -d Ubuntu -u root mkdir -p "$MountPoint"
 # Actually mount BTRFS partition (using UUID because /dev/sdX is volatile)
 $DriveUUID = "4c7599f8-27c8-4dbd-b54d-8ae41ea7dd67"
 wsl -d Ubuntu -u root mount UUID="$DriveUUID" "$MountPoint"
+
+wsl -d Ubuntu -u root sleep infinity
