@@ -1,4 +1,8 @@
 # Create symlink to the BTRFS partition
-New-Item -ItemType SymbolicLink -Path "$PSScriptRoot\WSLMountSymlink" -Target "\\wsl$\Ubuntu\mnt\data"
+$SymlinkPath = "$PSScriptRoot\WSLMountSymlink"
+$MountPoint = "\\wsl$\Ubuntu\mnt\data"
+New-Item -ItemType SymbolicLink -Path "$SymlinkPath" -Target $MountPoint
+
 # Mount symlink as a Windows Drive
-subst E: "$PSScriptRoot\WSLMountSymlink"
+$DriveLetter = "E"
+subst "${DriveLetter}:" "$SymlinkPath"
