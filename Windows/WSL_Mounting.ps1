@@ -5,8 +5,13 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }   
 
 # Make WSL treat data.vhdx as BTRFS
-wsl --mount --vhd --bare --name btrfsdata "D:\data.vhdx"
+$VHDXPath = "D:\data.vhdx"
+wsl --mount --vhd --bare --name btrfsdata "$VHDXPath"
+
 # Create directory inwhich to mount BTRFS partition
-wsl -d Ubuntu sudo mkdir -p /mnt/data
+$MountPoint = "/mnt/data"
+wsl -d Ubuntu sudo mkdir -p "$MountPoint"
+
 # Actually mount BTRFS partition (using UUID because /dev/sdX is volatile)
-wsl -d Ubuntu sudo mount UUID="4c7599f8-27c8-4dbd-b54d-8ae41ea7dd67" /mnt/data
+$DriveUUID = "4c7599f8-27c8-4dbd-b54d-8ae41ea7dd67"
+wsl -d Ubuntu sudo mount UUID="$DriveUUID" "$MountPoint"
