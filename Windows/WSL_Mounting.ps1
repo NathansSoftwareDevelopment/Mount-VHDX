@@ -12,7 +12,15 @@ $LogFileName = "${FileExplorerTime}_Windows.log"
 $LogFile = "$PSScriptRoot\..\Logs\$LogFileName"
 New-Item -Path $LogFile -ItemType File
 
-$HumanTime = [DateTimeOffset]::FromUnixTimeMilliseconds($StartTime).ToLocalTime().ToString("yyyy-MM-dd, HH-mm-ss tt, UTCz")
+function FormatUnixToHumanReadable {
+    param(
+        [long]$UnixTime
+    )
+
+    return [DateTimeOffset]::FromUnixTimeMilliseconds($UnixTime).ToLocalTime().ToString("yyyy-MM-dd, HH-mm-ss tt, UTCz")
+}
+
+$HumanTime = FormatUnixToHumanReadable $StartTime
 $StartTimeText = "$PSCommandPath Began at $StartTime ($HumanTime)"
 Add-Content -Path $LogFile -Value $StartTimeText
 
