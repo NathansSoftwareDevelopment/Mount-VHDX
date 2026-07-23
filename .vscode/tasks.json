@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Run PowerShell Script as Admin",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "Start-Process pwsh -Verb RunAs -ArgumentList '-File \"${file}\"'"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
