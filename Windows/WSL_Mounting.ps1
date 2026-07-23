@@ -23,7 +23,7 @@ function FormatUnixToHumanReadable {
         [long]$UnixTime
     )
 
-    return [DateTimeOffset]::FromUnixTimeMilliseconds($UnixTime).ToLocalTime().ToString("yyyy-MM-dd, HH-mm-ss tt, UTCz")
+    return [DateTimeOffset]::FromUnixTimeMilliseconds($UnixTime).ToLocalTime().ToString("yyyy-MM-dd, hh:mm:ss tt, UTCz")
 }
 
 $HumanOriginalStartTime = FormatUnixToHumanReadable $OriginalStartTime
