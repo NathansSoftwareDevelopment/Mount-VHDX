@@ -12,6 +12,10 @@ $LogFileName = "${FileExplorerTime}_Windows.log"
 $LogFile = "$PSScriptRoot\..\Logs\$LogFileName"
 New-Item -Path $LogFile -ItemType File
 
+$HumanTime = [DateTimeOffset]::FromUnixTimeMilliseconds($StartTime).ToLocalTime().ToString("yyyy-MM-dd, HH-mm-ss tt, UTCz")
+$StartTimeText = "$PSCommandPath Began at $StartTime ($HumanTime)"
+Add-Content -Path $LogFile -Value $StartTimeText
+
 # Make WSL treat data.vhdx as BTRFS
 $VHDXPath = "D:\data.vhdx"
 wsl --mount --vhd --bare --name btrfsdata "$VHDXPath"
