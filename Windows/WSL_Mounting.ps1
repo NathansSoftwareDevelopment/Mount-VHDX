@@ -1,10 +1,16 @@
+param(
+    [long]$OriginalStartTime
+)
 $StartTime = [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
 
 # Run as admin
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs -WindowStyle Hidden
+    Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -OriginalStartTime $StartTime" -Verb RunAs -WindowStyle Hidden
     exit
-}   
+}
+elseif (!$OriginalStartTime) {
+    $OriginalStartTime = $StartTime
+}
 
 # Create log file
 $FileExplorerTime = [DateTimeOffset]::FromUnixTimeMilliseconds($StartTime).LocalDateTime.ToString("yyyy-MM-dd_HH-mm-ss")
@@ -20,8 +26,12 @@ function FormatUnixToHumanReadable {
     return [DateTimeOffset]::FromUnixTimeMilliseconds($UnixTime).ToLocalTime().ToString("yyyy-MM-dd, HH-mm-ss tt, UTCz")
 }
 
-$HumanTime = FormatUnixToHumanReadable $StartTime
-$StartTimeText = "$PSCommandPath Began at $StartTime ($HumanTime)"
+$HumanOriginalStartTime = FormatUnixToHumanReadable $OriginalStartTime
+$OriginalStartTimeText = "$PSCommandPath Began at $OriginalStartTime ($HumanOriginalStartTime)"
+Add-Content -Path $LogFile -Value $OriginalStartTimeText
+
+$HumanStartTime = FormatUnixToHumanReadable $StartTime
+$StartTimeText = "$PSCommandPath Began with Administrator Privileges at $StartTime ($HumanStartTime)"
 Add-Content -Path $LogFile -Value $StartTimeText
 
 # Make WSL treat data.vhdx as BTRFS
