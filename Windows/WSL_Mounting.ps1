@@ -7,7 +7,7 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 }   
 
 # Create log file
-$FileExplorerTime = [DateTimeOffset]::FromUnixTimeMilliseconds($StartTime).ToString("yyyy-MM-dd_HH-mm-ss")
+$FileExplorerTime = [DateTimeOffset]::FromUnixTimeMilliseconds($StartTime).LocalDateTime.ToString("yyyy-MM-dd_HH-mm-ss")
 $LogFileName = "${FileExplorerTime}_Windows.log"
 $LogFile = "$PSScriptRoot\..\Logs\$LogFileName"
 New-Item -Path $LogFile -ItemType File
