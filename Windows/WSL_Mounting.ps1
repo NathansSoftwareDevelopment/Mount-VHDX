@@ -1,8 +1,16 @@
+$StartTime = [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
+
 # Run as admin
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
     Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`"" -Verb RunAs -WindowStyle Hidden
     exit
 }   
+
+# Create log file
+$FileExplorerTime = [DateTimeOffset]::FromUnixTimeMilliseconds($StartTime).ToString("yyyy-MM-dd_HH-mm-ss")
+$LogFileName = "${FileExplorerTime}_Windows.log"
+$LogFile = "$PSScriptRoot\..\Logs\$LogFileName"
+New-Item -Path $LogFile -ItemType File
 
 # Make WSL treat data.vhdx as BTRFS
 $VHDXPath = "D:\data.vhdx"
