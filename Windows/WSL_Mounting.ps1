@@ -26,6 +26,15 @@ function FormatUnixToHumanReadable {
     return [DateTimeOffset]::FromUnixTimeMilliseconds($UnixTime).ToLocalTime().ToString("yyyy-MM-dd, hh:mm:ss tt, UTCz")
 }
 
+function NewLine {
+    param(
+        [int]$Rows = 1
+    )
+
+    $Lines = "`n" * $Rows
+    Add-Content -Path $LogFile -Value $Lines -NoNewLine
+}
+
 $HumanOriginalStartTime = FormatUnixToHumanReadable $OriginalStartTime
 $OriginalStartTimeText = "$PSCommandPath Began at $OriginalStartTime ($HumanOriginalStartTime)"
 Add-Content -Path $LogFile -Value $OriginalStartTimeText
@@ -33,15 +42,18 @@ Add-Content -Path $LogFile -Value $OriginalStartTimeText
 $HumanStartTime = FormatUnixToHumanReadable $StartTime
 $StartTimeText = "$PSCommandPath Began with Administrator Privileges at $StartTime ($HumanStartTime)"
 Add-Content -Path $LogFile -Value $StartTimeText
+NewLine
 
 # Make WSL treat data.vhdx as BTRFS
 $VHDXPath = "D:\data.vhdx"
 $VHDXExistence = if (Test-Path -PAth $VHDXPath) {"does exist"} else {"does not exist"}
 Add-Content -Path $LogFile -Value "VHDX Path ($VHDXPath) $VHDXExistence"
+NewLine
 $env:WSL_UTF8 = 1
 $VHDXMountingMessage = wsl --mount --vhd --bare --name btrfsdata "$VHDXPath" 2>&1
 Add-Content -Path $LogFile $VHDXMountingMessage
 Add-Content -Path $LogFile "Exit Code: $LASTEXITCODE"
+NewLine 2
 
 # Create directory inwhich to mount BTRFS partition
 $MountPoint = "/mnt/data"
