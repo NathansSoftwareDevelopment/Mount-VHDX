@@ -36,7 +36,12 @@ Add-Content -Path $LogFile -Value $StartTimeText
 
 # Make WSL treat data.vhdx as BTRFS
 $VHDXPath = "D:\data.vhdx"
-wsl --mount --vhd --bare --name btrfsdata "$VHDXPath"
+$VHDXExistence = if (Test-Path -PAth $VHDXPath) {"does exist"} else {"does not exist"}
+Add-Content -Path $LogFile -Value "VHDX Path ($VHDXPath) $VHDXExistence"
+$env:WSL_UTF8 = 1
+$VHDXMountingMessage = wsl --mount --vhd --bare --name btrfsdata "$VHDXPath" 2>&1
+Add-Content -Path $LogFile $VHDXMountingMessage
+Add-Content -Path $LogFile "Exit Code: $LASTEXITCODE"
 
 # Create directory inwhich to mount BTRFS partition
 $MountPoint = "/mnt/data"
