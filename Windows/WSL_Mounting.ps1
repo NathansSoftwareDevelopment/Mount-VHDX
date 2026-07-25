@@ -5,7 +5,7 @@ $StartTime = [DateTimeOffset]::Now.ToUnixTimeMilliseconds()
 
 # Run as admin
 if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
-    Start-Process pwsh.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -OriginalStartTime $StartTime" -Verb RunAs -WindowStyle Hidden
+    Start-Process powershell.exe "-NoProfile -ExecutionPolicy Bypass -File `"$PSCommandPath`" -OriginalStartTime $StartTime" -Verb RunAs -WindowStyle Hidden
     exit
 }
 elseif (!$OriginalStartTime) {
