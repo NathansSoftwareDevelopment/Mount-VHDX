@@ -54,7 +54,7 @@ $VHDXPath = "D:\data.vhdx"
 $VHDXExistence = if (Test-Path -Path $VHDXPath) {"does exist"} else {"does not exist"}
 $LogFile.WriteLine("VHDX Path ($VHDXPath) $VHDXExistence")
 $env:WSL_UTF8 = 1
-$VHDXMountingMessage = (wsl --mount --vhd --bare --name btrfsdata "$VHDXPath") -join "`r`n    " 2>&1
+$VHDXMountingMessage = (wsl --mount --vhd --bare --name btrfsdata "$VHDXPath" 2>&1) -join "`r`n    "
 $LogFile.WriteLine("$VHDXMountingMessage`r`n    $(LogExit)")
 NewLine
 
@@ -63,7 +63,7 @@ $MountName = "data"
 $MountPoint = "/mnt/$MountName"
 $LogFile.WriteLine("Mount Point is $MountPoint")
 wsl -d Ubuntu -u root mkdir -p "$MountPoint"
-$Mounts = wsl -d Ubuntu ls /mnt/ 2>$1
+$Mounts = wsl -d Ubuntu ls /mnt/ 2>&1
 $MountPointExistence = if ($Mounts.Contains($MountName)) {"does exist"} else {"does not exist"}
 $LogFile.WriteLine("Mount Point $MountPointExistence in /mnt/")
 $LogFile.WriteLine("ls /mnt/ shows:`r`n    " + [regex]::Replace($Mounts, '\s+', "`r`n    ") + "`r`n    $(LogExit)")
@@ -74,7 +74,7 @@ $DriveUUID = "4c7599f8-27c8-4dbd-b54d-8ae41ea7dd67"
 $LogFile.WriteLine("Drive UUID is $DriveUUID")
 $DriveMountingMessage = wsl -d Ubuntu -u root mount UUID="$DriveUUID" "$MountPoint" 2>&1 | Where-Object { $_ -notmatch 'dmesg\(1\)' }
 $LogFile.WriteLine("$DriveMountingMessage`r`n    $(LogExit)")
-$FindMount = (wsl findmnt UUID=$DriveUUID) -join "`r`n    " 2>&1
+$FindMount = (wsl findmnt UUID=$DriveUUID 2>&1) -join "`r`n    "
 $LogFile.WriteLine("findmnt shows:`r`n    $FindMount`r`n    $(LogExit)")
 
 $LogFile.Close()
