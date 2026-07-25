@@ -73,6 +73,7 @@ NewLine
 $DriveUUID = "4c7599f8-27c8-4dbd-b54d-8ae41ea7dd67"
 $LogFile.WriteLine("Drive UUID is $DriveUUID")
 $DriveMountingMessage = wsl -d Ubuntu -u root mount UUID="$DriveUUID" "$MountPoint" 2>&1 | Where-Object { $_ -notmatch 'dmesg\(1\)' }
+if (!$DriveMountingMessage) {$DriveMountingMessage = "Drive mounted without output in terminal"}
 $LogFile.WriteLine("$DriveMountingMessage`r`n    $(LogExit)")
 $FindMount = (wsl findmnt UUID=$DriveUUID 2>&1) -join "`r`n    "
 $LogFile.WriteLine("findmnt shows:`r`n    $FindMount`r`n    $(LogExit)")
