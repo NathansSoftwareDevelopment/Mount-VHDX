@@ -15,8 +15,9 @@ elseif (!$OriginalStartTime) {
 # Create log file
 $FileExplorerTime = [DateTimeOffset]::FromUnixTimeMilliseconds($StartTime).LocalDateTime.ToString("yyyy-MM-dd_HH-mm-ss")
 $LogFileName = "${FileExplorerTime}_Windows.log"
-$LogFile = "$PSScriptRoot\..\Logs\$LogFileName"
-New-Item -Path $LogFile -ItemType File
+$LogFilePath = "$PSScriptRoot\..\Logs\$LogFileName"
+$LogFile = [System.IO.StreamWriter]::new(<# Path #> "$LogFilePath", <# Append Mode #> $true ) # Also creates file if does not exist
+$LogFile.AutoFlush = $true
 
 function FormatUnixToHumanReadable {
     param(
@@ -32,27 +33,27 @@ function NewLine {
     )
 
     $Lines = "`n" * $Rows
-    Add-Content -Path $LogFile -Value $Lines -NoNewLine
+    $LogFile.Write($Lines)
 }
 
 $HumanOriginalStartTime = FormatUnixToHumanReadable $OriginalStartTime
 $OriginalStartTimeText = "$PSCommandPath Began at $OriginalStartTime ($HumanOriginalStartTime)"
-Add-Content -Path $LogFile -Value $OriginalStartTimeText
+$LogFile.WriteLine($OriginalStartTimeText)
 
 $HumanStartTime = FormatUnixToHumanReadable $StartTime
 $StartTimeText = "$PSCommandPath Began with Administrator Privileges at $StartTime ($HumanStartTime)"
-Add-Content -Path $LogFile -Value $StartTimeText
+$LogFile.WriteLine($StartTimeText)
 NewLine
 
 # Make WSL treat data.vhdx as BTRFS
 $VHDXPath = "D:\data.vhdx"
 $VHDXExistence = if (Test-Path -Path $VHDXPath) {"does exist"} else {"does not exist"}
-Add-Content -Path $LogFile -Value "VHDX Path ($VHDXPath) $VHDXExistence"
+$LogFile.WriteLine("VHDX Path ($VHDXPath) $VHDXExistence")
 NewLine
 $env:WSL_UTF8 = 1
 $VHDXMountingMessage = wsl --mount --vhd --bare --name btrfsdata "$VHDXPath" 2>&1
-Add-Content -Path $LogFile $VHDXMountingMessage
-Add-Content -Path $LogFile "Exit Code: $LASTEXITCODE"
+$LogFile.WriteLine("$VHDXMountingMessage")
+$LogFile.WriteLine("Exit Code: $LASTEXITCODE")
 NewLine 2
 
 # Create directory inwhich to mount BTRFS partition
@@ -63,4 +64,5 @@ wsl -d Ubuntu -u root mkdir -p "$MountPoint"
 $DriveUUID = "4c7599f8-27c8-4dbd-b54d-8ae41ea7dd67"
 wsl -d Ubuntu -u root mount UUID="$DriveUUID" "$MountPoint"
 
+$LogFile.Close()
 wsl -d Ubuntu -u root sleep infinity
