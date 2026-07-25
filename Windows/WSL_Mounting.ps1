@@ -46,7 +46,7 @@ NewLine
 
 # Make WSL treat data.vhdx as BTRFS
 $VHDXPath = "D:\data.vhdx"
-$VHDXExistence = if (Test-Path -PAth $VHDXPath) {"does exist"} else {"does not exist"}
+$VHDXExistence = if (Test-Path -Path $VHDXPath) {"does exist"} else {"does not exist"}
 Add-Content -Path $LogFile -Value "VHDX Path ($VHDXPath) $VHDXExistence"
 NewLine
 $env:WSL_UTF8 = 1
