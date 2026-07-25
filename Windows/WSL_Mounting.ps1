@@ -49,12 +49,11 @@ NewLine
 $VHDXPath = "D:\data.vhdx"
 $VHDXExistence = if (Test-Path -Path $VHDXPath) {"does exist"} else {"does not exist"}
 $LogFile.WriteLine("VHDX Path ($VHDXPath) $VHDXExistence")
-NewLine
 $env:WSL_UTF8 = 1
 $VHDXMountingMessage = wsl --mount --vhd --bare --name btrfsdata "$VHDXPath" 2>&1
 $LogFile.WriteLine("$VHDXMountingMessage")
 $LogFile.WriteLine("Exit Code: $LASTEXITCODE")
-NewLine 2
+NewLine
 
 # Create directory inwhich to mount BTRFS partition
 $MountPoint = "/mnt/data"
