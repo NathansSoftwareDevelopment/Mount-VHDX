@@ -54,9 +54,8 @@ $VHDXPath = "D:\data.vhdx"
 $VHDXExistence = if (Test-Path -Path $VHDXPath) {"does exist"} else {"does not exist"}
 $LogFile.WriteLine("VHDX Path ($VHDXPath) $VHDXExistence")
 $env:WSL_UTF8 = 1
-$VHDXMountingMessage = wsl --mount --vhd --bare --name btrfsdata "$VHDXPath" 2>&1
-$LogFile.WriteLine("$VHDXMountingMessage")
-$LogFile.WriteLine("$(LogExit)")
+$VHDXMountingMessage = (wsl --mount --vhd --bare --name btrfsdata "$VHDXPath") -join "`r`n    " 2>&1
+$LogFile.WriteLine("$VHDXMountingMessage`r`n    $(LogExit)")
 NewLine
 
 # Create directory inwhich to mount BTRFS partition
@@ -73,9 +72,8 @@ NewLine
 # Actually mount BTRFS partition (using UUID because /dev/sdX is volatile)
 $DriveUUID = "4c7599f8-27c8-4dbd-b54d-8ae41ea7dd67"
 $LogFile.WriteLine("Drive UUID is $DriveUUID")
-$DriveMountingMessage = wsl -d Ubuntu -u root mount UUID="$DriveUUID" "$MountPoint" 2>&1
-$LogFile.WriteLine("$DriveMountingMessage")
-$LogFile.WriteLine("$(LogExit)")
+$DriveMountingMessage = wsl -d Ubuntu -u root mount UUID="$DriveUUID" "$MountPoint" 2>&1 | Where-Object { $_ -notmatch 'dmesg\(1\)' }
+$LogFile.WriteLine("$DriveMountingMessage`r`n    $(LogExit)")
 $FindMount = (wsl findmnt UUID=$DriveUUID) -join "`r`n    " 2>&1
 $LogFile.WriteLine("findmnt shows:`r`n    $FindMount`r`n    $(LogExit)")
 
