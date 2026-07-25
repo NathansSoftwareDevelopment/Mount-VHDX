@@ -64,10 +64,10 @@ $MountName = "data"
 $MountPoint = "/mnt/$MountName"
 $LogFile.WriteLine("Mount Point is $MountPoint")
 wsl -d Ubuntu -u root mkdir -p "$MountPoint"
-$Mounts = wsl -d Ubuntu ls /mnt/
+$Mounts = wsl -d Ubuntu ls /mnt/ 2>$1
 $MountPointExistence = if ($Mounts.Contains($MountName)) {"does exist"} else {"does not exist"}
 $LogFile.WriteLine("Mount Point $MountPointExistence in /mnt/")
-$LogFile.WriteLine("/mnt/`r`n    " + [regex]::Replace($Mounts, '\s+', "`r`n    "))
+$LogFile.WriteLine("ls /mnt/ shows:`r`n    " + [regex]::Replace($Mounts, '\s+', "`r`n    ") + "`r`n    $(LogExit)")
 NewLine
 
 # Actually mount BTRFS partition (using UUID because /dev/sdX is volatile)
