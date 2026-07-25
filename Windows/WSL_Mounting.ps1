@@ -45,6 +45,10 @@ $StartTimeText = "$PSCommandPath Began with Administrator Privileges at $StartTi
 $LogFile.WriteLine($StartTimeText)
 NewLine
 
+function LogExit {
+    return "Exit Code: $LASTEXITCODE"
+}
+
 # Make WSL treat data.vhdx as BTRFS
 $VHDXPath = "D:\data.vhdx"
 $VHDXExistence = if (Test-Path -Path $VHDXPath) {"does exist"} else {"does not exist"}
@@ -52,7 +56,7 @@ $LogFile.WriteLine("VHDX Path ($VHDXPath) $VHDXExistence")
 $env:WSL_UTF8 = 1
 $VHDXMountingMessage = wsl --mount --vhd --bare --name btrfsdata "$VHDXPath" 2>&1
 $LogFile.WriteLine("$VHDXMountingMessage")
-$LogFile.WriteLine("Exit Code: $LASTEXITCODE")
+$LogFile.WriteLine("$(LogExit)")
 NewLine
 
 # Create directory inwhich to mount BTRFS partition
@@ -71,9 +75,9 @@ $DriveUUID = "4c7599f8-27c8-4dbd-b54d-8ae41ea7dd67"
 $LogFile.WriteLine("Drive UUID is $DriveUUID")
 $DriveMountingMessage = wsl -d Ubuntu -u root mount UUID="$DriveUUID" "$MountPoint" 2>&1
 $LogFile.WriteLine("$DriveMountingMessage")
-$LogFile.WriteLine("Exit Code: $LASTEXITCODE")
+$LogFile.WriteLine("$(LogExit)")
 $FindMount = (wsl findmnt UUID=$DriveUUID) -join "`r`n    " 2>&1
-$LogFile.WriteLine("findmnt shows:`r`n    $FindMount`r`n    Exit Code: $LASTEXITCODE")
+$LogFile.WriteLine("findmnt shows:`r`n    $FindMount`r`n    $(LogExit)")
 
 $LogFile.Close()
 wsl -d Ubuntu -u root sleep infinity
