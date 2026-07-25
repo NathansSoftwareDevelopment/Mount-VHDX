@@ -56,8 +56,15 @@ $LogFile.WriteLine("Exit Code: $LASTEXITCODE")
 NewLine
 
 # Create directory inwhich to mount BTRFS partition
-$MountPoint = "/mnt/data"
+$MountName = "data"
+$MountPoint = "/mnt/$MountName"
+$LogFile.WriteLine("Mount Point is $MountPoint")
 wsl -d Ubuntu -u root mkdir -p "$MountPoint"
+$Mounts = wsl -d Ubuntu ls /mnt/
+$MountPointExistence = if ($Mounts.Contains($MountName)) {"does exist"} else {"does not exist"}
+$LogFile.WriteLine("Mount Point $MountPointExistence in /mnt/")
+$LogFile.WriteLine("/mnt/`r`n    " + [regex]::Replace($Mounts, '\s+', "`r`n    "))
+NewLine
 
 # Actually mount BTRFS partition (using UUID because /dev/sdX is volatile)
 $DriveUUID = "4c7599f8-27c8-4dbd-b54d-8ae41ea7dd67"
