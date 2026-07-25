@@ -68,7 +68,12 @@ NewLine
 
 # Actually mount BTRFS partition (using UUID because /dev/sdX is volatile)
 $DriveUUID = "4c7599f8-27c8-4dbd-b54d-8ae41ea7dd67"
-wsl -d Ubuntu -u root mount UUID="$DriveUUID" "$MountPoint"
+$LogFile.WriteLine("Drive UUID is $DriveUUID")
+$DriveMountingMessage = wsl -d Ubuntu -u root mount UUID="$DriveUUID" "$MountPoint" 2>&1
+$LogFile.WriteLine("$DriveMountingMessage")
+$LogFile.WriteLine("Exit Code: $LASTEXITCODE")
+$FindMount = (wsl findmnt UUID=$DriveUUID) -join "`r`n    " 2>&1
+$LogFile.WriteLine("findmnt shows:`r`n    $FindMount`r`n    Exit Code: $LASTEXITCODE")
 
 $LogFile.Close()
 wsl -d Ubuntu -u root sleep infinity
